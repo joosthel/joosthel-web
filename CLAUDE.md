@@ -1,4 +1,4 @@
-# system3-web — joosthelfers.com
+# joosthel-web — joosthelfers.com
 
 Personal portfolio of Joost Helfers, Berlin-based creative technologist and AI artist
 (AI visuals and film, generative pipelines, agentic systems).
