@@ -1127,7 +1127,6 @@ a:hover {
   letter-spacing: -0.01em;
 }
 
-.package-price { color: var(--ink); }
 .package-duration { color: var(--fg-muted); }
 
 .package-description {

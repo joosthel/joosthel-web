@@ -156,8 +156,6 @@ export function packageOfferSchema(pkg: ServicePackage) {
         name: pkg.name,
         description: `${pkg.tagline} ${pkg.description}`,
         url,
-        price: pkg.priceFrom,
-        priceCurrency: 'EUR',
         itemOffered: {
             '@type': 'Service',
             name: pkg.name,

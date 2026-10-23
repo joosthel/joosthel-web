@@ -1,6 +1,6 @@
 // Bump when homepage or other static-page copy changes; used for sitemap lastModified.
 // (Git dates are unreliable in CI: deploy builds use shallow clones.)
-export const SITE_LAST_UPDATED = '2026-09-07';
+export const SITE_LAST_UPDATED = '2026-10-23';
 
 export const SITE_CONFIG = {
     title: "Joost Helfers. Creative Technologist. Local Generative AI Pipelines & Custom AI Solutions. Berlin.",

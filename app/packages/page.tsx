@@ -7,12 +7,9 @@ import TrackedLink from '../components/TrackedLink';
 
 export const metadata: Metadata = pageMetadata(
     'Packages: Book Local AI Audit, Pilot Pipeline, or Production Build',
-    'Four fixed-scope engagements with transparent starting prices: Readiness Audit from €2,500, Pilot Pipeline from €6,000, Production Build from €15,000, Agent-Ready Sprint from €3,500. Local generative AI pipelines and systems, built in Berlin, delivered remote.',
+    'Four fixed-scope engagements: Readiness Audit, Pilot Pipeline, Production Build, and Agent-Ready Sprint. Prices on request. Local generative AI pipelines and systems, built in Berlin, delivered remote.',
     '/packages'
 );
-
-const formatPrice = (value: number) =>
-    `€${value.toLocaleString('en-US')}`;
 
 const INCLUDED = [
     'Fixed price quoted before work starts',
@@ -56,7 +53,14 @@ export default function PackagesPage() {
                             <h2 className="package-name">{pkg.name}</h2>
                             <p className="package-tagline">{pkg.tagline}</p>
                             <p className="package-terms">
-                                <span className="package-price">from {formatPrice(pkg.priceFrom)}</span>
+                                <TrackedLink
+                                    href={`mailto:${SITE_CONFIG.email}?subject=${encodeURIComponent(`Price request: ${pkg.name}`)}`}
+                                    className="package-price"
+                                    eventName="package_inquiry"
+                                    eventParams={{ package: pkg.id, source: 'price' }}
+                                >
+                                    Price upon request
+                                </TrackedLink>
                                 <span className="package-duration">{pkg.duration}</span>
                             </p>
                             <p className="package-description">{pkg.description}</p>
@@ -88,8 +92,8 @@ export default function PackagesPage() {
                         ))}
                     </ul>
                     <p className="comparison-note">
-                        Prices are entry points. Final quotes depend on scope, and larger
-                        builds get scoped after an audit or pilot so nobody commits blind.
+                        Prices are quoted per project and depend on scope. Larger builds
+                        get scoped after an audit or pilot so nobody commits blind.
                     </p>
                 </section>
 

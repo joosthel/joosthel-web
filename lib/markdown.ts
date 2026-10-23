@@ -128,7 +128,7 @@ ${faqs}
 function packagesMarkdown(): string {
     const packages = PACKAGES.map(
         (p) =>
-            `### ${p.name} — from €${p.priceFrom.toLocaleString('en-US')} (${p.duration})\n\n${p.tagline}\n\n${p.description}\n\nDeliverables:\n\n${p.deliverables.map((d) => `- ${d}`).join('\n')}\n\nBest for: ${p.bestFor}`,
+            `### ${p.name} (${p.duration})\n\n${p.tagline}\n\nPrice upon request: ${SITE_CONFIG.email}\n\n${p.description}\n\nDeliverables:\n\n${p.deliverables.map((d) => `- ${d}`).join('\n')}\n\nBest for: ${p.bestFor}`,
     ).join('\n\n');
 
     return page(
@@ -144,7 +144,7 @@ Fixed scope, fixed price, no discovery-call maze. Four engagements for bringing 
 - Remote worldwide; on-site visits anywhere, travel costs covered by the client
 - Assets stay on your hardware for everything local
 
-Prices are entry points; larger builds get scoped after an audit or pilot.
+Prices are quoted per project; larger builds get scoped after an audit or pilot.
 
 ## The packages
 

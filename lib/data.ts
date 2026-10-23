@@ -130,8 +130,6 @@ export interface ServicePackage {
     name: string;
     /** One-line hook shown under the name. */
     tagline: string;
-    /** Entry price in EUR; displayed as 'from'. */
-    priceFrom: number;
     duration: string;
     description: string;
     deliverables: string[];
@@ -143,7 +141,6 @@ export const PACKAGES: ServicePackage[] = [
         id: 'readiness-audit',
         name: 'Readiness Audit',
         tagline: 'Find out what could run locally, and what it would cost.',
-        priceFrom: 2500,
         duration: '2–3 days',
         description: 'A structured look at your workflows, assets, and requirements that ends with a concrete answer: which parts of your production could run generative AI, what should stay local versus hosted, which hardware fits, and what the realistic budget is. No build included, no obligation to continue.',
         deliverables: [
@@ -158,7 +155,6 @@ export const PACKAGES: ServicePackage[] = [
         id: 'pilot-pipeline',
         name: 'Pilot Pipeline',
         tagline: 'One workflow, running on your hardware, in two weeks.',
-        priceFrom: 6000,
         duration: '2 weeks',
         description: 'A single production workflow built end to end: generation pipeline or local LLM setup, installed on your machines, documented, and handed over working. The pilot proves the concept on real briefs instead of demo cases, and gives you something concrete to evaluate before a larger commitment.',
         deliverables: [
@@ -173,7 +169,6 @@ export const PACKAGES: ServicePackage[] = [
         id: 'production-build',
         name: 'Production Build',
         tagline: 'The full system: pipeline, interface, team training.',
-        priceFrom: 15000,
         duration: '4–8 weeks',
         description: 'Complete AI infrastructure for your production: engineered pipelines, custom interfaces where needed, LoRAs or fine-tuning where base models fall short, and training until your team runs everything independently. Scoped in detail after an audit or pilot, quoted as a fixed price before work starts.',
         deliverables: [
@@ -188,7 +183,6 @@ export const PACKAGES: ServicePackage[] = [
         id: 'agent-ready-sprint',
         name: 'Agent-Ready Sprint',
         tagline: 'Make your company findable by ChatGPT, Claude, and Perplexity.',
-        priceFrom: 3500,
         duration: '1 week',
         description: 'A one-week sprint that makes your content readable and queryable for AI agents: llms.txt, structured data, machine-readable feeds, and a public MCP server so assistants can pull facts about your business straight from the source. Runs in production on this very website first, so the reference is inspectable.',
         deliverables: [
