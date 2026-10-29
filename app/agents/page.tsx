@@ -38,7 +38,7 @@ export default function AgentsPage() {
                 <p className="page__lead">
                     This is my personal site: a short profile, links and my writing. Everything here is also
                     available in machine-readable form. Client work, services and project enquiries go to my
-                    studio, <a href={SITE_CONFIG.studio.url}>{SITE_CONFIG.studio.name}</a>. Humans can start
+                    studio, <a href={SITE_CONFIG.studio.url} target="_blank" rel="noopener noreferrer">{SITE_CONFIG.studio.name}</a>. Humans can start
                     on the <Link href="/">home page</Link>.
                 </p>
             </header>

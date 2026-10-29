@@ -36,6 +36,8 @@ export default function Home() {
                     </p>
                     <TrackedLink
                         href={SITE_CONFIG.studio.url}
+                        target="_blank"
+                        rel="noopener noreferrer"
                         className="studio__link"
                         eventName="studio_click"
                         eventParams={{ location: 'home' }}

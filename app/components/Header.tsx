@@ -32,6 +32,8 @@ export default function Header() {
                     <li>
                         <TrackedLink
                             href={SITE_CONFIG.studio.url}
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="link-quiet nocase"
                             eventName="studio_click"
                             eventParams={{ location: 'header' }}
