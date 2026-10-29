@@ -1,12 +1,13 @@
 import { SITE_CONFIG } from './constants';
 import { OG_DEFAULT_IMAGE, absoluteUrl } from './metadata';
-import type { Project } from './data';
 import type { Post } from './blog';
-import type { ServicePackage } from './data';
 
 export const PERSON_ID = `${SITE_CONFIG.url}/#person`;
 export const WEBSITE_ID = `${SITE_CONFIG.url}/#website`;
 export const BLOG_ID = `${SITE_CONFIG.url}/blog#blog`;
+export const STUDIO_ID = `${SITE_CONFIG.studio.url}/#organization`;
+
+export const BLOG_DESCRIPTION = 'Notes by Joost Helfers on AI, local models and the work around them.';
 
 // Compact reference to the Person entity defined in the root layout graph.
 // Name and url are repeated so the node is still meaningful for parsers
@@ -28,12 +29,19 @@ export function personSchema() {
         url: SITE_CONFIG.url,
         sameAs: SITE_CONFIG.sameAs,
         jobTitle: SITE_CONFIG.jobTitle,
+        worksFor: {
+            '@type': 'Organization',
+            '@id': STUDIO_ID,
+            name: SITE_CONFIG.studio.name,
+            alternateName: 'system3',
+            url: SITE_CONFIG.studio.url,
+        },
         description: SITE_CONFIG.description,
         email: `mailto:${SITE_CONFIG.email}`,
         contactPoint: [
             {
                 '@type': 'ContactPoint',
-                contactType: 'business inquiries',
+                contactType: 'personal',
                 email: SITE_CONFIG.email,
             },
             {
@@ -52,28 +60,6 @@ export function personSchema() {
             '@type': 'EducationalOrganization',
             name: 'DesignMorphine',
         },
-        knowsAbout: [
-            'Generative AI',
-            'Local Generative AI Pipelines',
-            'Self-Hosted AI',
-            'Local LLM Inference',
-            'ComfyUI',
-            'LoRA Training',
-            'AI Visual Production',
-            'Prompt Engineering',
-            'Workflow Automation',
-            'Custom AI Solutions',
-            'Agentic Workflows',
-            'Generative Engine Optimization',
-            'Model Context Protocol',
-            'Digital Twins',
-            'Creative Technology',
-            'AI Film',
-            'AI Systems',
-            'Next.js',
-            'Python',
-            'Computational Design',
-        ],
     };
 }
 
@@ -89,19 +75,13 @@ export function webSiteSchema() {
     };
 }
 
-const VISUAL_ARTWORK_IDS = ['souly-boondawg', 'inyo-viz', 'msc-arcadia'];
-
-export function projectSchema(project: Project) {
+export function profilePageSchema() {
     return {
-        '@type': VISUAL_ARTWORK_IDS.includes(project.id) ? 'VisualArtwork' : 'CreativeWork',
-        name: project.title,
-        description: project.description,
-        url: absoluteUrl(project.url),
-        image: absoluteUrl(project.image),
-        ...(project.date ? { dateCreated: project.date } : {}),
-        ...(project.tags ? { keywords: project.tags.join(', ') } : {}),
-        author: personRef(),
-        creator: personRef(),
+        '@type': 'ProfilePage',
+        url: absoluteUrl('/'),
+        name: SITE_CONFIG.author,
+        mainEntity: personRef(),
+        isPartOf: { '@id': WEBSITE_ID },
     };
 }
 
@@ -114,60 +94,6 @@ export function breadcrumbSchema(items: Array<{ name: string; path: string }>) {
             name: item.name,
             item: absoluteUrl(item.path),
         })),
-    };
-}
-
-export function faqPageSchema(faqs: Array<{ question: string; answer: string }>) {
-    return {
-        '@type': 'FAQPage',
-        mainEntity: faqs.map((faq) => ({
-            '@type': 'Question',
-            name: faq.question,
-            acceptedAnswer: {
-                '@type': 'Answer',
-                text: faq.answer,
-            },
-        })),
-    };
-}
-
-export function serviceSchema(service: { id: string; title: string; description: string }) {
-    return {
-        '@type': 'Service',
-        '@id': `${SITE_CONFIG.url}/pipelines#${service.id}`,
-        name: service.title,
-        description: service.description,
-        url: `${SITE_CONFIG.url}/pipelines#${service.id}`,
-        serviceType: service.title,
-        provider: personRef(),
-        areaServed: [
-            { '@type': 'City', name: 'Berlin' },
-            { '@type': 'Country', name: 'Germany' },
-            { '@type': 'AdministrativeArea', name: 'Worldwide (remote and on-site)' },
-        ],
-    };
-}
-
-export function packageOfferSchema(pkg: ServicePackage) {
-    const url = `${SITE_CONFIG.url}/packages#${pkg.id}`;
-    return {
-        '@type': 'Offer',
-        '@id': url,
-        name: pkg.name,
-        description: `${pkg.tagline} ${pkg.description}`,
-        url,
-        itemOffered: {
-            '@type': 'Service',
-            name: pkg.name,
-            description: pkg.description,
-            serviceType: pkg.name,
-            provider: personRef(),
-            areaServed: [
-                { '@type': 'City', name: 'Berlin' },
-                { '@type': 'Country', name: 'Germany' },
-                { '@type': 'AdministrativeArea', name: 'Worldwide (remote and on-site)' },
-            ],
-        },
     };
 }
 
@@ -185,15 +111,7 @@ export function blogPostingSchema(post: Post) {
         wordCount: post.content.trim().split(/\s+/).length,
         inLanguage: 'en',
         author: personRef(),
-        publisher: {
-            '@type': 'Organization',
-            name: SITE_CONFIG.author,
-            url: SITE_CONFIG.url,
-            logo: {
-                '@type': 'ImageObject',
-                url: absoluteUrl(OG_DEFAULT_IMAGE),
-            },
-        },
+        publisher: personRef(),
         isPartOf: {
             '@type': 'Blog',
             '@id': BLOG_ID,
@@ -209,8 +127,7 @@ export function blogCollectionSchema(posts: Post[]) {
         '@id': BLOG_ID,
         name: 'Writing',
         url: absoluteUrl('/blog'),
-        description:
-            'Notes on AI visual production, agentic workflows, and how brands show up for AI agents.',
+        description: BLOG_DESCRIPTION,
         creator: personRef(),
         blogPost: posts.map((post) => ({
             '@type': 'BlogPosting',
@@ -218,21 +135,6 @@ export function blogCollectionSchema(posts: Post[]) {
             url: absoluteUrl(`/blog/${post.slug}`),
             datePublished: new Date(post.date).toISOString(),
         })),
-    };
-}
-
-export function profilePageSchema() {
-    return {
-        '@type': 'ProfilePage',
-        url: absoluteUrl('/about'),
-        name: `About ${SITE_CONFIG.author}`,
-        mainEntity: personRef(),
-        isPartOf: {
-            '@type': 'WebSite',
-            '@id': WEBSITE_ID,
-            name: SITE_CONFIG.author,
-            url: SITE_CONFIG.url,
-        },
     };
 }
 

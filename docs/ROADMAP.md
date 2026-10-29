@@ -1,5 +1,9 @@
 # Roadmap — joosthelfers.com
 
+> Historical (June 2026). Since October 2026 the site is a small personal page;
+> client work, services and the portfolio moved to system³ (https://system3.xyz)
+> and the MCP server was removed. See CLAUDE.md for the current state.
+
 Where the site and the positioning go next. Written June 2026, after the
 positioning + GEO upgrade (about page, brand credits, XD Network, structured
 data, feeds, llms.txt/llms-full.txt, machine-readable JSON endpoints).
@@ -81,8 +85,8 @@ Three clusters that match the positioning. Cross-link new posts through the
 ## 4. Site backlog (small, non-urgent)
 
 - Portrait photo for the Person schema `image` property and the about page.
-- A "Lab" page for the experiments in `public/assets/imgs/lab/` (28 unused
-  generative images): cheap proof of ongoing exploration.
+- A "Lab" page for generative experiments (the 28 unused images in
+  `public/assets/imgs/lab/` were deleted in October 2026).
 - JPG copies of project hero images if LinkedIn previews of webp ever
   cause trouble.
 - Consider `next/image` with `unoptimized` for lazy-loading wins (current

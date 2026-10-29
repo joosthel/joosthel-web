@@ -4,10 +4,11 @@ import { NextRequest, NextResponse } from 'next/server';
 // rewritten to the prerendered /md/* renditions (lib/markdown.ts); browsers
 // never send that Accept value, so HTML stays the default. The matcher
 // enumerates page routes only; /_next, /api, the .txt/.xml/.json routes,
-// /.well-known, /imprint, /privacy, and /md itself are untouched. Keep the
+// /.well-known, /imprint, /privacy, and /md itself are untouched; the
+// redirected legacy paths (/about, /projects/*, ...) never reach it. Keep the
 // matcher and getMarkdownParams() in lib/markdown.ts in step.
 export const config = {
-    matcher: ['/', '/about', '/agents', '/blog', '/blog/:slug', '/projects/:slug', '/pipelines', '/packages'],
+    matcher: ['/', '/agents', '/blog', '/blog/:slug'],
 };
 
 export default function proxy(req: NextRequest) {

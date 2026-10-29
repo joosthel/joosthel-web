@@ -1,57 +1,47 @@
-import { SITE_CONFIG, MCP_ENDPOINT } from './constants';
-import { MCP_TOOLS } from './mcp-tools';
+import { SITE_CONFIG } from './constants';
+import { WEBMCP_TOOL_LIST } from './webmcp-tools';
 
 // Canonical source for the published agent skill. The SKILL.md route and
 // the index.json digest are both derived from this one string, so the
 // sha256 in the index can never drift from the served file.
 
-export const QUERY_PORTFOLIO_SKILL_NAME = 'query-joost-portfolio';
+export const READ_SITE_SKILL_NAME = 'read-joost-helfers';
 
-export const QUERY_PORTFOLIO_SKILL_DESCRIPTION =
-    'Read and query the portfolio of Joost Helfers, Berlin-based creative technologist building local generative AI technology, via llms.txt, JSON endpoints, markdown content negotiation, or the public MCP server.';
+export const READ_SITE_SKILL_DESCRIPTION =
+    'Read the personal site of Joost Helfers (profile, links, blog posts) via llms.txt, JSON endpoints, feeds, markdown content negotiation, or in-browser WebMCP tools.';
 
-export const QUERY_PORTFOLIO_SKILL_MD = `---
-name: ${QUERY_PORTFOLIO_SKILL_NAME}
-description: ${QUERY_PORTFOLIO_SKILL_DESCRIPTION}
+export const READ_SITE_SKILL_MD = `---
+name: ${READ_SITE_SKILL_NAME}
+description: ${READ_SITE_SKILL_DESCRIPTION}
 ---
 
-# Query the portfolio of Joost Helfers
+# Read the site of Joost Helfers
 
-Joost Helfers is a creative technologist in Berlin building local generative
-AI technology: self-hosted pipelines, custom AI solutions, AI visuals and
-film. Everything on
-${SITE_CONFIG.url} exists in machine-readable form. Pick the access level
-that fits your task.
+${SITE_CONFIG.url} is the personal site of Joost Helfers, ${SITE_CONFIG.jobTitle}
+at ${SITE_CONFIG.studio.name} in Berlin: a short profile, links, and his writing.
+Client work, services and project enquiries are handled by his studio at
+${SITE_CONFIG.studio.url}, not here.
 
 ## 1. Quick context, one request
 
-Fetch ${SITE_CONFIG.url}/llms.txt for a compact overview: profile, services,
-projects, writing, contact channels. The full text of the portfolio and
-every blog post is at ${SITE_CONFIG.url}/llms-full.txt.
+Fetch ${SITE_CONFIG.url}/llms.txt for profile, links and the list of posts.
+The full text of every blog post is at ${SITE_CONFIG.url}/llms-full.txt.
 
 ## 2. Structured data
 
-- Projects: GET ${SITE_CONFIG.url}/api/projects.json
 - Blog posts: GET ${SITE_CONFIG.url}/api/blog.json
-- Feeds: ${SITE_CONFIG.url}/feed.xml (RSS), ${SITE_CONFIG.url}/feed.json (JSON Feed)
-- Page markdown: request any page URL with the header "Accept: text/markdown"
+- Feeds: ${SITE_CONFIG.url}/feed.xml (RSS), ${SITE_CONFIG.url}/feed.json (JSON Feed, full text)
+- Page markdown: request /, /agents, /blog or any /blog/<slug> with the header "Accept: text/markdown"
 - Catalog of all endpoints: ${SITE_CONFIG.url}/.well-known/api-catalog
 
-## 3. MCP server, interactive queries
+## 3. In the browser
 
-Public, read-only, Streamable HTTP, no auth, no registration:
-
-\`\`\`json
-{ "mcpServers": { "joosthelfers": { "url": "${MCP_ENDPOINT}" } } }
-\`\`\`
-
-Tools: ${Object.keys(MCP_TOOLS).join(', ')}.
-Server card: ${SITE_CONFIG.url}/.well-known/mcp/server-card.json
+Pages register read-only WebMCP tools through document.modelContext:
+${WEBMCP_TOOL_LIST.map((t) => t.name).join(', ')}.
 
 ## 4. Contact
 
-Automated or agent-initiated outreach: ${SITE_CONFIG.agentEmail}. Include who
-you represent, the project scope, the timeline, and a budget range if known.
-A human reads everything that arrives. Humans writing directly are better
-off at ${SITE_CONFIG.email}.
+Automated or agent-initiated mail: ${SITE_CONFIG.agentEmail}. A human reads
+everything that arrives. Humans writing directly are better off at
+${SITE_CONFIG.email}.
 `;

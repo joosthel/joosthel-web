@@ -1,82 +1,108 @@
 # joosthel-web — joosthelfers.com
 
-Personal portfolio of Joost Helfers, Berlin-based creative technologist and AI artist
-(AI visuals and film, generative pipelines, agentic systems).
+Personal site of Joost Helfers, Founder and Creative Technologist at system³
+(https://system3.xyz), his creative technology studio in Berlin. The site holds
+only: who he is, his links, a link to system³, and his blog. Client work,
+services and the portfolio live at system³, not here. Do not add projects,
+services, packages, prices, client lists or a brand-credits line.
 
 ## Stack & deployment
 
-- Next.js App Router, TypeScript, Tailwind CSS. Deployed to **Vercel**; pushes to
-  `main` go to production, other branches get preview deployments.
-- All pages are statically prerendered. The only server runtime is the public,
-  read-only **MCP server** at `app/api/[transport]/route.ts` (`/api/mcp`,
-  Streamable HTTP via `mcp-handler`, no auth, SSE disabled). It reads
-  `lib/data.ts` and `content/blog` directly; `next.config.js` bundles the MDX
-  files into that function via `outputFileTracingIncludes`.
-- Build: `npm run build`. Local dev: `npm run dev`.
+- Next.js App Router, TypeScript, plain CSS (no Tailwind). Deployed to **Vercel**;
+  pushes to `main` go to production, other branches get preview deployments.
+- All pages and endpoints are statically prerendered. The only runtime is
+  `proxy.ts` (markdown negotiation). There is no MCP server any more (removed
+  2026-10 at Joost's request; `/api/mcp` is gone).
+- Build: `npm run build`. Lint: `npm run lint`. Local dev: `npm run dev`.
 
 ## Where content lives
 
-- Projects + services: `lib/data.ts` (single source of truth — home project index,
-  sitemap, JSON endpoints, and llms.txt all derive from it).
+- Profile copy and links: `lib/data.ts` (`PROFILE_INTRO`, `STUDIO_LINE`,
+  `PROFILE_LINKS`). Single source for the home page, its markdown rendition,
+  llms.txt, llms-full.txt and the WebMCP `get_profile` tool.
 - Blog posts: `content/blog/*.mdx` (frontmatter: title, date, optional `updated`,
-  excerpt, tags, optional relatedPosts).
-- Site config: `lib/constants.ts`. Bump `SITE_LAST_UPDATED` when static-page copy changes.
-- Design system: `app/globals.css` — five neutrals, one blue accent (#0057ff),
-  Doto display + Inter body, zero border radii. Reuse existing classes before adding new ones.
+  excerpt, tags, optional relatedPosts). Keep slugs stable.
+- Site config: `lib/constants.ts` (`SITE_CONFIG`, incl. `studio`). Bump
+  `SITE_LAST_UPDATED` when static-page copy changes.
+- Redirects for the removed portfolio pages (`/about`, `/projects/*`,
+  `/packages`, `/pipelines`) live in `next.config.js` `redirects()`. `/about`
+  goes to `/` (308). The others go to `/` with 307s while `SYSTEM3_LIVE` is
+  false; once system3.xyz serves the new site, set it to true and they become
+  308s to system3.xyz (`/projects/souly-boondawg` to `/work/souly-boondawg`,
+  other projects to `/#work`, `/packages` and `/pipelines` to the root).
+
+## Design system
+
+`app/globals.css`: the system³ design system, reduced. Tokens from the system³
+brand handoff (`~/Documents/Projects/System3-Rebranding/System³ brand
+identity/design_handoff_system3_brand/`): ink #131313, paper #EFEFEF, grey 1
+#6B6B6B, grey 2 #C8C8C8, signal #2F6BFF. Geist + Geist Mono (code only),
+self-hosted through `next/font` in `app/layout.tsx`. Document-style layout:
+full width, 40px gutters (16px on phones), numbered sections opened by a 1px
+ink rule, a 240-340px label column beside the content column, spec rows with
+grey 2 hairlines. Components: `app/components/Section.tsx` (Section, Spec),
+`PostList.tsx`.
+
+- No system³ wordmark, s³ mark or field graphic. Joost's name in Geist 500,
+  -0.045em is the wordmark (`.wordmark`).
+- Signal blue at most once per page and only for state: the "Now" marker on
+  the home page, the reading-progress line on posts.
+- No rounded corners, shadows, gradients or scroll animations.
+- Write system³ with the elevated ³ in copy; system3 only in URLs. Inside
+  uppercase labels use `.nocase` so it never reads SYSTEM³.
+- OG image: `public/assets/imgs/og-default.png`, rendered from
+  `scripts/og-default.html`.
 
 ## Generated endpoints — never hand-edit the output
 
-`/llms.txt`, `/llms-full.txt`, `/feed.xml`, `/feed.json`, `/api/projects.json`,
-`/api/blog.json` are build-time route handlers under `app/` (with
-`export const dynamic = 'force-static'`). They regenerate from `lib/data.ts` and
-`content/blog` on every build. To change them, edit the route handler or the source
-data, never a file in `public/`. A route-handler path must not collide with a
-`public/` file of the same name.
+`/llms.txt`, `/llms-full.txt`, `/feed.xml`, `/feed.json`, `/api/blog.json`,
+`/sitemap.xml`, `/robots.txt` are build-time route handlers under `app/` (with
+`export const dynamic = 'force-static'`). They regenerate from `lib/data.ts`,
+`lib/constants.ts` and `content/blog` on every build. To change them, edit the
+route handler or the source data, never a file in `public/`. A route-handler
+path must not collide with a `public/` file of the same name.
 
-JSON-LD schema builders live in `lib/schema.ts`; per-page metadata helpers in
-`lib/metadata.ts`.
+JSON-LD schema builders live in `lib/schema.ts` (Person: jobTitle "Founder and
+Creative Technologist", worksFor system³, sameAs LinkedIn, Instagram, GitHub);
+per-page metadata helpers in `lib/metadata.ts`.
 
 ## Agent surfaces
 
-The site is positioned as a reference for agent-readable portfolios. The surfaces:
-MCP server (`/api/mcp`), `/agents` page (human+machine guide), `/llms.txt` +
-`/llms-full.txt`, `/.well-known/agent.json` (hand-maintained in `public/`),
-JSON endpoints, and feeds. Discovery surfaces generated from `lib/mcp-tools.ts`,
-`lib/agent-skills.ts`, and `lib/constants.ts`: `/.well-known/api-catalog`,
-`/.well-known/mcp/server-card.json`, `/.well-known/agent-card.json`,
-`/.well-known/agent-skills/*`, `/openapi.json`, `/api/health`, `/auth.md`.
-`robots.txt` is a route handler (`app/robots.txt/route.ts`) carrying
-Content-Signal directives; Link headers live in `next.config.js` `headers()`.
+`/agents` page (human+machine guide), `/llms.txt` + `/llms-full.txt`,
+`/.well-known/agent.json` (hand-maintained in `public/`), `/api/blog.json`, and
+feeds. Generated discovery surfaces: `/.well-known/api-catalog`,
+`/.well-known/agent-skills/*` (from `lib/agent-skills.ts`), `/openapi.json`,
+`/api/health`, `/auth.md`. The endpoint list on `/agents` and in llms.txt comes
+from `lib/agent-endpoints.ts`. `robots.txt` carries Content-Signal directives;
+Link headers live in `next.config.js` `headers()`.
 Markdown negotiation: `proxy.ts` rewrites page requests with
-`Accept: text/markdown` to `/md/*` routes built by `lib/markdown.ts` — update
+`Accept: text/markdown` to `/md/*` routes built by `lib/markdown.ts`; update
 `lib/markdown.ts` when static-page copy changes, and `proxy.ts` + the `/md`
-params when pages are added. WebMCP: `app/components/WebMcpProvider.tsx` registers the
-same seven tools in-browser via `document.modelContext.registerTool()`, built
-by `lib/webmcp-tools.ts`; tool metadata lives zod-free in
-`lib/mcp-tool-meta.ts` (`lib/mcp-tools.ts` adds the zod shapes). Chrome
-149-156 needs an origin-trial token in `WEBMCP_ORIGIN_TRIAL_TOKEN`
-to expose tools without a flag. `llms@joosthelfers.com` (in
-`SITE_CONFIG.agentEmail`) is the contact address for AI agents and automated
-outreach; `mail@` stays the human channel. When projects, services, contact
-details, or MCP tools change, `lib/mcp-tools.ts` and the hand-maintained
-`agent.json` must stay consistent with `lib/data.ts` and `lib/constants.ts`.
+params (plus the `negotiated` list in `next.config.js`) when pages are added.
+WebMCP: `app/components/WebMcpProvider.tsx` registers four read-only tools
+(`get_profile`, `list_posts`, `get_post`, `search_posts`) in-browser via
+`document.modelContext.registerTool()`; tools and their metadata live in
+`lib/webmcp-tools.ts`. Chrome 149-156 needs an origin-trial token in
+`WEBMCP_ORIGIN_TRIAL_TOKEN` to expose tools without a flag.
+`llms@joosthelfers.com` (`SITE_CONFIG.agentEmail`) is the contact address for AI
+agents and automated outreach; `mail@` stays the human channel. When links,
+contact details or WebMCP tools change, keep the hand-maintained `agent.json`
+consistent with `lib/data.ts`, `lib/constants.ts` and `lib/webmcp-tools.ts`.
 
 ## Voice rules for all site copy
 
-Authentic and down to earth. Direct, modest, concrete sentences. No hype words
-(transformative, cutting-edge, passionate), no em dashes, no rule-of-three flourishes,
-no AI-sounding filler. Technical terms only where they are earned. When naming brand
-credits, keep the honest qualifier: some work shipped via agencies that held the contract.
+Authentic and down to earth. Direct, modest, concrete sentences, first person on
+the home page. No hype words (transformative, cutting-edge, passionate), no em
+dashes, no rule-of-three flourishes, no AI-sounding filler. Technical terms only
+where they are earned. Use the personal-voice skill for new copy.
 
 ## Facts that are easy to get wrong
 
-- Brand credits line (Lindt, Zeiss, Google, Bosch, CADFEM, Souly) is "direct and via
-  agencies" — do not phrase as direct client relationships.
 - XD Network was removed from all site copy in June 2026 (Joost is unsure about
   staying in the collective). Do not re-add it anywhere without asking him.
-- Three.js is not a core skill: it was used on one project (INYO digital twin). It may
-  appear as a tag on the INYO project pages only, never in bio, stack, or service copy.
-- Two projects are NDA ("NDA. Process only.") — never name those clients.
+- Three.js is not a core skill. Never put it in bio or profile copy.
+- No client names on this site. Some past work is under NDA.
+- promptenhancer.joosthelfers.com is a separate deployment; leave it alone.
 
 <!-- BEGIN:nextjs-agent-rules -->
 

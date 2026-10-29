@@ -1,106 +1,115 @@
 import type { Metadata } from 'next';
-import { OG_DEFAULT_IMAGE } from '@/lib/metadata';
+import { pageMetadata } from '@/lib/metadata';
+import { SITE_CONFIG } from '@/lib/constants';
 
-export const metadata: Metadata = {
-    title: 'Privacy Policy',
-    description: 'How joosthelfers.com handles personal data.',
-    alternates: { canonical: '/privacy' },
-    openGraph: {
-        title: 'Privacy Policy | Joost Helfers',
-        description: 'How joosthelfers.com handles personal data.',
-        url: '/privacy',
-        type: 'website',
-        images: [{ url: OG_DEFAULT_IMAGE, width: 1200, height: 630 }],
-    },
-};
+export const metadata: Metadata = pageMetadata('Privacy Policy', 'How joosthelfers.com handles personal data.', '/privacy');
 
 export default function Privacy() {
     return (
-        <div className="wrapper">
-            <div className="post">
-                <header className="post-header">
-                    <h1 className="post-title">Privacy Policy</h1>
-                </header>
+        <div className="wrap page">
+            <header className="page__top">
+                <p className="bar label">
+                    <span>Legal</span>
+                    <span className="muted">Privacy</span>
+                </p>
+                <h1 className="display page__title">Privacy Policy</h1>
+            </header>
+            <div className="section section--tight">
+                <article className="prose prose--small">
+                    <p>
+                        This policy explains which personal data is processed when you visit joosthelfers.com or
+                        write to me, why, and what rights you have. You can use this website without telling me
+                        anything about yourself. There are no accounts, forms or comments, and the website sets
+                        no cookies.
+                    </p>
 
-                <article className="post-content">
+                    <h2>1. Controller</h2>
                     <p>
-                        We are very delighted that you have shown interest in our enterprise. Data protection is of a particularly high priority for the management of Joost Helfers. The use of the Internet pages of Joost Helfers is possible without any indication of personal data; however, if a data subject wants to use special enterprise services via our website, processing of personal data could become necessary. If the processing of personal data is necessary and there is no statutory basis for such processing, we generally obtain consent from the data subject.
+                        The controller under the General Data Protection Regulation (GDPR) is:
                     </p>
                     <p>
-                        The processing of personal data, such as the name, address, e-mail address, or telephone number of a data subject shall always be in line with the General Data Protection Regulation (GDPR), and in accordance with the country-specific data protection regulations applicable to Joost Helfers. By means of this data protection declaration, our enterprise would like to inform the general public of the nature, scope, and purpose of the personal data we collect, use and process. Furthermore, data subjects are informed, by means of this data protection declaration, of the rights to which they are entitled.
-                    </p>
-                    <p>
-                        As the controller, Joost Helfers has implemented numerous technical and organizational measures to ensure the most complete protection of personal data processed through this website. However, Internet-based data transmissions may in principle have security gaps, so absolute protection may not be guaranteed. For this reason, every data subject is free to transfer personal data to us via alternative means, e.g. by telephone.
-                    </p>
-
-                    <h2>1. Definitions</h2>
-                    <p>
-                        The data protection declaration of Joost Helfers is based on the terms used by the European legislator for the adoption of the General Data Protection Regulation (GDPR). Our data protection declaration should be legible and understandable for the general public, as well as our customers and business partners. To ensure this, we would like to first explain the terminology used.
-                    </p>
-                    <p>In this data protection declaration, we use, inter alia, the following terms:</p>
-                    <ul>
-                        <li><strong>a) Personal data:</strong> Personal data means any information relating to an identified or identifiable natural person (“data subject”).</li>
-                        <li><strong>b) Data subject:</strong> Data subject is any identified or identifiable natural person, whose personal data is processed by the controller responsible for the processing.</li>
-                        <li><strong>c) Processing:</strong> Processing is any operation or set of operations which is performed on personal data.</li>
-                        <li><strong>d) Restriction of processing:</strong> Restriction of processing is the marking of stored personal data with the aim of limiting their processing in the future.</li>
-                        <li><strong>e) Profiling:</strong> Profiling means any form of automated processing of personal data consisting of the use of personal data to evaluate certain personal aspects relating to a natural person.</li>
-                        <li><strong>f) Pseudonymisation:</strong> Pseudonymisation is the processing of personal data in such a manner that the personal data can no longer be attributed to a specific data subject without the use of additional information.</li>
-                        <li><strong>g) Controller:</strong> Controller or controller responsible for the processing is the natural or legal person, public authority, agency or other body which, alone or jointly with others, determines the purposes and means of the processing of personal data.</li>
-                    </ul>
-
-                    <h2>2. Name and Address of the controller</h2>
-                    <p>
-                        Controller for the purposes of the General Data Protection Regulation (GDPR), other data protection laws applicable in Member states of the European Union and other provisions related to data protection is:
-                    </p>
-                    <p>
-                        <strong>Joost Helfers</strong><br />
+                        Joost Helfers<br />
                         Friedenauer Höhe<br />
                         12159 Berlin<br />
-                        Germany
-                    </p>
-                    <p>
-                        Email: mail@joosthelfers.com<br />
-                        Website: www.joosthelfers.com
+                        Germany<br />
+                        Email: <a href={`mailto:${SITE_CONFIG.email}`}>{SITE_CONFIG.email}</a>
                     </p>
 
-                    <h2>3. Cookies</h2>
+                    <h2>2. Hosting and server logs</h2>
                     <p>
-                        This website does not set cookies. Visitor statistics are collected without cookies and without any technology that identifies or tracks individual visitors (see section 7).
+                        This website is hosted by Vercel Inc., 440 N Barranca Avenue #4133, Covina, CA 91723, USA.
+                        When you open a page, your browser sends technical data that the server needs to deliver
+                        it: your IP address, the date and time, the page requested, the referring page, and your
+                        browser and operating system. Vercel processes this data on my behalf to deliver the
+                        website and keep it secure, and keeps it in log files for a limited time.
+                    </p>
+                    <p>
+                        The legal basis is Art. 6 (1) (f) GDPR. My legitimate interest is a website that works and
+                        is protected against misuse. Vercel may process data in the USA. Vercel is certified under
+                        the EU-U.S. Data Privacy Framework, for which the European Commission has adopted an
+                        adequacy decision (Art. 45 GDPR).
                     </p>
 
-                    <h2>4. Collection of general data and information</h2>
+                    <h2>3. Vercel Web Analytics</h2>
                     <p>
-                        The website of the Joost Helfers collects a series of general data and information when a data subject or automated system calls up the website. This general data and information are stored in the server log files.
+                        To see which pages are read, I use Vercel Web Analytics, provided by Vercel Inc. (address
+                        above). It does not use cookies. Visits are
+                        counted through an anonymised hash that cannot identify you and is discarded after 24
+                        hours. What I see is aggregated: page views, referrers, country, browser and device type.
+                        No data is shared for advertising and there is no tracking across websites.
+                    </p>
+                    <p>
+                        The legal basis is Art. 6 (1) (f) GDPR. My legitimate interest is understanding, in
+                        aggregate, how the website is used.
                     </p>
 
-                    <h2>5. Routine erasure and blocking of personal data</h2>
+                    <h2>4. Fonts, embeds and links</h2>
                     <p>
-                        The data controller shall process and store the personal data of the data subject only for the period necessary to achieve the purpose of storage, or as far as this is granted by the European legislator.
+                        The fonts on this website are served from this domain. The website does not embed
+                        third-party content such as videos or maps, and it loads no scripts or files from other
+                        servers. It links to other websites, such as LinkedIn, Instagram, GitHub and system³. When
+                        you follow such a link, the privacy policy of that website applies.
                     </p>
 
-                    <h2>6. Rights of the data subject</h2>
-                    <p>Each data subject shall have the right granted by the European legislator to:</p>
+                    <h2>5. Email</h2>
+                    <p>
+                        If you write to me by email, I process your email address, your message and any other
+                        details you include, in order to reply. Email for this domain is handled by Apple (iCloud
+                        Mail), provided in the EU by Apple Distribution International Ltd., Ireland. The legal
+                        basis is Art. 6 (1) (b) GDPR if your message relates to a contract or its preparation, and
+                        Art. 6 (1) (f) GDPR otherwise; my legitimate interest is answering your message. I delete
+                        the correspondence once it is no longer needed, unless legal retention periods apply.
+                    </p>
+
+                    <h2>6. Your rights</h2>
+                    <p>Under the GDPR you have the right to:</p>
                     <ul>
-                        <li>a) Obtain confirmation as to whether or not personal data concerning him or her are being processed.</li>
-                        <li>b) Obtain free information about his or her personal data stored at any time and a copy of this information.</li>
-                        <li>c) Obtain without undue delay the rectification of inaccurate personal data concerning him or her.</li>
-                        <li>d) Obtain the erasure of personal data concerning him or her without undue delay (&quot;Right to be forgotten&quot;).</li>
-                        <li>e) Obtain from the controller restriction of processing.</li>
-                        <li>f) Receive the personal data concerning him or her, which was provided to a controller, in a structured, commonly used and machine-readable format.</li>
-                        <li>g) Object, on grounds relating to his or her particular situation, at any time, to processing of personal data concerning him or her.</li>
-                        <li>h) Not to be subject to a decision based solely on automated processing, including profiling.</li>
-                        <li>i) Withdraw his or her consent to processing of his or her personal data at any time.</li>
+                        <li>access the personal data I process about you (Art. 15),</li>
+                        <li>have inaccurate data corrected (Art. 16),</li>
+                        <li>have your data erased (Art. 17),</li>
+                        <li>restrict the processing (Art. 18),</li>
+                        <li>receive your data in a portable format (Art. 20),</li>
+                        <li>
+                            object at any time to processing based on Art. 6 (1) (f) GDPR, on grounds relating to
+                            your particular situation (Art. 21).
+                        </li>
                     </ul>
-
-                    <h2>7. Data protection provisions about the application and use of Vercel Web Analytics</h2>
                     <p>
-                        On this website, the controller has integrated Vercel Web Analytics, a privacy-friendly analytics service provided by Vercel Inc. (440 N Barranca Avenue #4133, Covina, CA 91723, USA), which also hosts this website. Vercel Web Analytics does not use cookies and does not collect or store personal data: visits are counted through an anonymized hash that cannot identify an individual visitor and is discarded after 24 hours. Collected data is limited to aggregated information such as page views, referrers, country, browser, and device type. No data is shared with third parties for advertising purposes and no cross-site tracking takes place.
+                        To use these rights, email me. You also have the right to lodge a complaint with a data
+                        protection supervisory authority (Art. 77 GDPR). The authority responsible for me is the
+                        Berlin Commissioner for Data Protection and Freedom of Information (Berliner Beauftragte
+                        für Datenschutz und Informationsfreiheit).
                     </p>
 
-                    <h2>13. Existence of automated decision-making</h2>
-                    <p>As a responsible company, we do not use automatic decision-making or profiling.</p>
+                    <h2>7. Automated decisions</h2>
+                    <p>I do not use automated decision-making or profiling.</p>
 
-                    <p style={{ marginTop: '2rem', fontStyle: 'italic' }}>(͡ ° ͜ʖ ͡ °)</p>
+                    <h2>8. Changes</h2>
+                    <p>
+                        I update this policy when the website or the law changes. Last updated: October 2026.
+                    </p>
+
+                    <p className="muted">(͡ ° ͜ʖ ͡ °)</p>
                 </article>
             </div>
         </div>

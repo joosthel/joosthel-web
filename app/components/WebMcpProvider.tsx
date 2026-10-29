@@ -3,7 +3,7 @@
 import { useEffect } from 'react';
 import { buildWebMcpTools, type WebMcpTool } from '@/lib/webmcp-tools';
 
-// WebMCP: register the portfolio's read-only tools with the browser so an
+// WebMCP: register the site's read-only tools with the browser so an
 // in-page agent (Gemini in Chrome, Edge Copilot, ChatGPT Desktop, ...) can
 // query the site without scraping it. Current spec and Chrome 149+ expose
 // document.modelContext.registerTool(); early-preview builds exposed

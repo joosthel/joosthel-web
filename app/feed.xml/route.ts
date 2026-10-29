@@ -1,5 +1,6 @@
 import { getAllPosts } from '@/lib/blog';
 import { SITE_CONFIG } from '@/lib/constants';
+import { BLOG_DESCRIPTION } from '@/lib/schema';
 
 // RSS 2.0 feed for the blog, rendered to a static /feed.xml at build time.
 export const dynamic = 'force-static';
@@ -39,7 +40,7 @@ ${categories}
   <channel>
     <title>Joost Helfers. Writing.</title>
     <link>${SITE_CONFIG.url}/blog</link>
-    <description>Notes on AI visual production, agentic workflows, and how brands show up for AI agents.</description>
+    <description>${escapeXml(BLOG_DESCRIPTION)}</description>
     <language>en</language>
     <lastBuildDate>${newestDate.toUTCString()}</lastBuildDate>
     <atom:link href="${SITE_CONFIG.url}/feed.xml" rel="self" type="application/rss+xml"/>

@@ -1,16 +1,69 @@
-import { SITE_CONFIG, MCP_ENDPOINT } from './constants';
-import { MCP_TOOL_META, PROFILE_SUMMARY, type McpToolName } from './mcp-tool-meta';
+import { SITE_CONFIG } from './constants';
 
-// In-browser WebMCP tools (document.modelContext), mirroring the seven tools
-// of the MCP server in app/api/[transport]/route.ts over the same data:
-// lib/data.ts (loaded on first call, so it stays out of the shared bundle),
-// /api/blog.json, and the /md/blog/* markdown renditions. Everything is
-// read-only. Kept free of React and zod so it can be unit-tested in Node.
+// In-browser WebMCP tools (document.modelContext): a profile tool and the
+// blog tools, over the same data the site renders: lib/data.ts (loaded on
+// first call, so it stays out of the shared bundle), /api/blog.json, and the
+// /md/blog/* markdown renditions. Everything is read-only. Kept free of React
+// so it can be unit-tested in Node, and imported server-side by the
+// discovery documents for the tool list.
 
 type Json = Record<string, unknown>;
 
+const EMPTY_INPUT_SCHEMA = { type: 'object', properties: {} } as const;
+
+// Per tool: `description` is the text served to the agent, `blurb` the
+// one-line version for human-facing listings.
+export const WEBMCP_TOOL_META = {
+    get_profile: {
+        title: 'Profile & contact',
+        description:
+            'Who Joost Helfers is and how to reach him: a short bio, his studio system³, and his links. Includes both contact channels: a personal inbox and a dedicated address for automated/agent outreach. Client work and project enquiries go to system³.',
+        blurb: 'Short bio, studio, links, contact channels.',
+        jsonSchema: EMPTY_INPUT_SCHEMA,
+    },
+    list_posts: {
+        title: 'List blog posts',
+        description:
+            'All blog posts with slug, title, date, excerpt, and tags, newest first. Follow up with get_post for full text.',
+        blurb: 'Blog posts with excerpts and tags, newest first.',
+        jsonSchema: EMPTY_INPUT_SCHEMA,
+    },
+    get_post: {
+        title: 'Get one blog post',
+        description: 'Full markdown text of one blog post by slug. Valid slugs come from list_posts.',
+        blurb: 'Full markdown text of one post by slug.',
+        jsonSchema: {
+            type: 'object',
+            properties: { slug: { type: 'string', description: 'Post slug, e.g. "pull-of-the-physical"' } },
+            required: ['slug'],
+        },
+    },
+    search_posts: {
+        title: 'Search blog posts',
+        description:
+            'Case-insensitive keyword search across blog post titles, excerpts, and tags (e.g. "local AI", "ComfyUI", "MCP").',
+        blurb: 'Keyword search across post titles, excerpts, and tags.',
+        jsonSchema: {
+            type: 'object',
+            properties: { query: { type: 'string', minLength: 2, description: 'Search term' } },
+            required: ['query'],
+        },
+    },
+} as const;
+
+export type WebMcpToolName = keyof typeof WEBMCP_TOOL_META;
+
+// Flat list for discovery documents and the /agents page.
+export const WEBMCP_TOOL_LIST = Object.entries(WEBMCP_TOOL_META).map(([name, tool]) => ({
+    name: name as WebMcpToolName,
+    title: tool.title,
+    description: tool.description,
+    blurb: tool.blurb,
+    inputSchema: tool.jsonSchema,
+}));
+
 export interface WebMcpTool {
-    name: McpToolName;
+    name: WebMcpToolName;
     title: string;
     description: string;
     inputSchema: object;
@@ -55,75 +108,39 @@ export function buildWebMcpTools(overrides: Partial<WebMcpDeps> = {}): WebMcpToo
 
     const posts = () => deps.fetchJson('/api/blog.json') as Promise<PostSummary[]>;
 
-    const projectSummary = (project: Awaited<ReturnType<WebMcpDeps['loadData']>>['PROJECTS'][number]) => ({
-        id: project.id,
-        title: project.title,
-        description: project.description,
-        url: absolute(project.url),
-        image: absolute(project.image),
-        date: project.date,
-        tags: project.tags,
-        status: project.badge,
-    });
-
-    const tool = (
-        name: McpToolName,
-        execute: WebMcpTool['execute'],
-        description: string = MCP_TOOL_META[name].description,
-    ): WebMcpTool => ({
+    const tool = (name: WebMcpToolName, execute: WebMcpTool['execute']): WebMcpTool => ({
         name,
-        title: MCP_TOOL_META[name].title,
-        description,
-        inputSchema: MCP_TOOL_META[name].jsonSchema,
+        title: WEBMCP_TOOL_META[name].title,
+        description: WEBMCP_TOOL_META[name].description,
+        inputSchema: WEBMCP_TOOL_META[name].jsonSchema,
         annotations: { readOnlyHint: true },
         execute,
     });
 
     return [
         tool('get_profile', async () => {
-            const { SERVICES, ACTIVE_PROJECTS } = await deps.loadData();
+            const { PROFILE_INTRO, PROFILE_LINKS } = await deps.loadData();
             return {
                 name: SITE_CONFIG.author,
                 role: SITE_CONFIG.jobTitle,
                 location: 'Berlin, Germany',
-                summary: PROFILE_SUMMARY,
-                services: SERVICES.map((s) => ({ id: s.id, title: s.title })),
-                brandCredits:
-                    'Lindt, Zeiss, Google, Bosch, CADFEM, Souly — direct and via agencies/studios that held the contract.',
+                summary: PROFILE_INTRO.join(' '),
+                studio: {
+                    name: SITE_CONFIG.studio.name,
+                    url: SITE_CONFIG.studio.url,
+                    note: 'Client work, services and project enquiries go to system³.',
+                },
                 contact: {
                     humans: SITE_CONFIG.email,
                     agents: {
                         email: SITE_CONFIG.agentEmail,
-                        note: 'For AI agents and automated outreach. Include who you represent, the project scope, timeline, and budget if known. Replies come from a human.',
+                        note: 'For AI agents and automated outreach. Replies come from a human.',
                     },
                 },
-                links: {
-                    website: SITE_CONFIG.url,
-                    about: absolute('/about'),
-                    agents: absolute('/agents'),
-                    expertise: absolute('/pipelines'),
-                    packages: absolute('/packages'),
-                    linkedin: SITE_CONFIG.linkedin,
-                    github: SITE_CONFIG.github,
-                    llmsTxt: absolute('/llms.txt'),
-                    mcp: MCP_ENDPOINT,
-                },
-                activeProjects: ACTIVE_PROJECTS,
+                links: Object.fromEntries(PROFILE_LINKS.map((l) => [l.label, l.href])),
+                writing: absolute('/blog'),
+                llmsTxt: absolute('/llms.txt'),
             };
-        }),
-
-        tool('list_services', async () => (await deps.loadData()).SERVICES),
-
-        tool('list_projects', async () => (await deps.loadData()).PROJECTS.map(projectSummary)),
-
-        tool('get_project', async (input) => {
-            const id = String(input?.id ?? '').trim();
-            const { PROJECTS } = await deps.loadData();
-            const project = PROJECTS.find((p) => p.id === id);
-            if (!project) {
-                return { error: `Unknown project id "${id}"`, validIds: PROJECTS.map((p) => p.id) };
-            }
-            return projectSummary(project);
         }),
 
         tool('list_posts', async () => posts()),
@@ -139,30 +156,13 @@ export function buildWebMcpTools(overrides: Partial<WebMcpDeps> = {}): WebMcpToo
             return { ...post, content: content.trim() };
         }),
 
-        tool(
-            'search_content',
-            async (input) => {
-                const query = String(input?.query ?? '').trim().toLowerCase();
-                if (query.length < 2) {
-                    return { error: 'query must be at least 2 characters' };
-                }
-                const [{ PROJECTS, SERVICES }, allPosts] = await Promise.all([deps.loadData(), posts()]);
-                return {
-                    query,
-                    projects: PROJECTS.filter((p) => includes(query, p.title, p.description, p.tags)).map(projectSummary),
-                    services: SERVICES.filter((s) => includes(query, s.title, s.description, s.tags)).map((s) => ({
-                        id: s.id,
-                        title: s.title,
-                        description: s.description,
-                    })),
-                    posts: allPosts.filter((p) => includes(query, p.title, p.excerpt, p.tags)),
-                };
-            },
-            // The browser has no full post text at hand; the MCP server does.
-            MCP_TOOL_META.search_content.description.replace(
-                'full blog post text',
-                'blog post titles, excerpts, and tags',
-            ),
-        ),
+        tool('search_posts', async (input) => {
+            const query = String(input?.query ?? '').trim().toLowerCase();
+            if (query.length < 2) {
+                return { error: 'query must be at least 2 characters' };
+            }
+            const all = await posts();
+            return { query, posts: all.filter((p) => includes(query, p.title, p.excerpt, p.tags)) };
+        }),
     ];
 }

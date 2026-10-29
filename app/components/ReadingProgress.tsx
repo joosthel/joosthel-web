@@ -2,7 +2,8 @@
 
 import { useEffect, useRef } from 'react';
 
-// One-pixel accent line that fills the header rule as the reader scrolls.
+// Signal line along the top edge that fills as the reader scrolls: the one
+// signal-blue element on post pages.
 export default function ReadingProgress() {
     const ref = useRef<HTMLDivElement>(null);
 

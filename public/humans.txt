@@ -1,15 +1,16 @@
 /* TEAM */
-Creative Technologist & AI Artist: Joost Helfers
+Founder and Creative Technologist, system³: Joost Helfers
 Site: https://joosthelfers.com
+Studio: https://system3.xyz
 Location: Berlin, Germany
 Contact: mail [at] joosthelfers.com
 Agent contact: llms [at] joosthelfers.com
 LinkedIn: https://linkedin.com/in/joosthel
+Instagram: https://instagram.com/joosthel
 GitHub: https://github.com/joosthel
 
 /* SITE */
-Stack: Next.js, TypeScript, Tailwind CSS
+Stack: Next.js, TypeScript
 Hosting: Vercel
-MCP: https://joosthelfers.com/api/mcp
-Fonts: Doto, Inter
-Last update: 2026/06/11
+Fonts: Geist, Geist Mono
+Last update: 2026/10/29

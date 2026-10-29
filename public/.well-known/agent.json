@@ -1,58 +1,35 @@
 {
   "name": "Joost Helfers",
-  "description": "Berlin-based creative technologist building local generative AI technology. Self-hosted AI pipelines, local LLM systems, custom AI solutions, and AI visuals and film for brands, agencies, studios, and product teams.",
+  "description": "Personal site of Joost Helfers, Founder and Creative Technologist at system³ (https://system3.xyz), Berlin. Short profile, links and writing. Client work and project enquiries go to system³.",
   "url": "https://joosthelfers.com",
   "entry_point": "https://joosthelfers.com/llms.txt",
-  "capabilities": ["content", "portfolio", "blog", "feeds", "mcp", "webmcp"],
+  "capabilities": ["content", "profile", "blog", "feeds", "webmcp"],
   "contact": "mailto:mail@joosthelfers.com",
   "agent_contact": "mailto:llms@joosthelfers.com",
-  "mcp": {
-    "endpoint": "https://joosthelfers.com/api/mcp",
-    "transport": "streamable-http",
-    "auth": "none",
-    "tools": [
-      "get_profile",
-      "list_services",
-      "list_projects",
-      "get_project",
-      "list_posts",
-      "get_post",
-      "search_content"
-    ]
-  },
   "webmcp": {
     "api": "document.modelContext",
     "registered_on": "every page",
     "read_only": true,
     "tools": [
       "get_profile",
-      "list_services",
-      "list_projects",
-      "get_project",
       "list_posts",
       "get_post",
-      "search_content"
+      "search_posts"
     ]
   },
-  "content_negotiation": "Request any page URL with 'Accept: text/markdown' to get a markdown version.",
+  "content_negotiation": "Request /, /agents, /blog or any /blog/<slug> with 'Accept: text/markdown' to get a markdown version. Imprint and privacy are HTML only.",
   "links": {
+    "studio": "https://system3.xyz",
     "agents_guide": "https://joosthelfers.com/agents",
     "llms_txt": "https://joosthelfers.com/llms.txt",
     "llms_full_txt": "https://joosthelfers.com/llms-full.txt",
-    "mcp": "https://joosthelfers.com/api/mcp",
-    "mcp_server_card": "https://joosthelfers.com/.well-known/mcp/server-card.json",
-    "a2a_agent_card": "https://joosthelfers.com/.well-known/agent-card.json",
     "api_catalog": "https://joosthelfers.com/.well-known/api-catalog",
     "agent_skills_index": "https://joosthelfers.com/.well-known/agent-skills/index.json",
     "openapi": "https://joosthelfers.com/openapi.json",
     "health": "https://joosthelfers.com/api/health",
     "auth_md": "https://joosthelfers.com/auth.md",
-    "about": "https://joosthelfers.com/about",
-    "expertise": "https://joosthelfers.com/pipelines",
-    "packages": "https://joosthelfers.com/packages",
     "sitemap": "https://joosthelfers.com/sitemap.xml",
     "robots_txt": "https://joosthelfers.com/robots.txt",
-    "projects_json": "https://joosthelfers.com/api/projects.json",
     "blog_json": "https://joosthelfers.com/api/blog.json",
     "feed_xml": "https://joosthelfers.com/feed.xml",
     "feed_json": "https://joosthelfers.com/feed.json"

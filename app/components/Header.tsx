@@ -2,105 +2,45 @@
 
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
 import { SITE_CONFIG } from '../../lib/constants';
 import TrackedLink from './TrackedLink';
 
-const NAV_LINKS = [
-    { href: '/#work', label: 'Work' },
-    { href: '/packages', label: 'Packages' },
-    { href: '/about', label: 'About' },
-    { href: '/blog', label: 'Writing' },
-];
-
+// The name in Geist is the wordmark. On the home page the h1 carries it,
+// so the header shows only the nav there. aria-current only on the exact
+// /blog path: the prerendered 404 for an unknown /blog/<slug> renders with
+// a different pathname on the server, and a prefix match would mismatch on
+// hydration.
 export default function Header() {
-    const [menuOpen, setMenuOpen] = useState(false);
     const pathname = usePathname();
-
-    const isCurrent = (href: string) => {
-        const path = href.split('#')[0] || '/';
-        return path === '/' ? pathname === '/' : pathname === path || pathname.startsWith(`${path}/`);
-    };
-
-    useEffect(() => {
-        if (!menuOpen) return;
-        const previousOverflow = document.body.style.overflow;
-        document.body.style.overflow = 'hidden';
-        const onKeyDown = (event: KeyboardEvent) => {
-            if (event.key === 'Escape') setMenuOpen(false);
-        };
-        document.addEventListener('keydown', onKeyDown);
-        return () => {
-            document.body.style.overflow = previousOverflow;
-            document.removeEventListener('keydown', onKeyDown);
-        };
-    }, [menuOpen]);
+    const onHome = pathname === '/';
+    const onBlogIndex = pathname === '/blog';
 
     return (
-        <header className="site-header">
-            <Link href="/" className="header-left" title={SITE_CONFIG.title}>
-                <span className="header-logo">
-                    <img src="/assets/imgs/JH_Logo-black-88.png" alt={`${SITE_CONFIG.author} logo`} width="22" height="22" />
-                </span>
-                <span className="site-title">Joost Helfers</span>
-            </Link>
-
-            <nav className="header-nav">
-                {NAV_LINKS.map((link) => (
-                    <Link
-                        key={link.href}
-                        href={link.href}
-                        className="header-nav-link"
-                        aria-current={isCurrent(link.href) ? 'page' : undefined}
-                    >
-                        {link.label}
-                    </Link>
-                ))}
-            </nav>
-
-            <div className="header-right">
-                <TrackedLink
-                    href={`mailto:${SITE_CONFIG.email}`}
-                    className="cta-button-small"
-                    eventName="contact_click"
-                    eventParams={{ location: 'header' }}
-                >
-                    Get in touch
-                </TrackedLink>
-
-                <button
-                    className="mobile-menu-toggle"
-                    onClick={() => setMenuOpen(!menuOpen)}
-                    aria-label="Toggle menu"
-                    aria-expanded={menuOpen}
-                >
-                    <span className={`hamburger ${menuOpen ? 'open' : ''}`} />
-                </button>
-            </div>
-
-            {menuOpen && (
-                <nav className="mobile-nav">
-                    {NAV_LINKS.map((link) => (
-                        <Link
-                            key={link.href}
-                            href={link.href}
-                            className="mobile-nav-link"
-                            onClick={() => setMenuOpen(false)}
-                        >
-                            {link.label}
-                        </Link>
-                    ))}
-                    <TrackedLink
-                        href={`mailto:${SITE_CONFIG.email}`}
-                        className="mobile-nav-link mobile-nav-cta"
-                        eventName="contact_click"
-                        eventParams={{ location: 'mobile_nav' }}
-                        onClick={() => setMenuOpen(false)}
-                    >
-                        Get in touch
-                    </TrackedLink>
-                </nav>
+        <header className="wrap site-header">
+            {!onHome && (
+                <Link href="/" className="site-header__home wordmark">
+                    {SITE_CONFIG.author}
+                </Link>
             )}
+            <nav aria-label="Primary">
+                <ul className="site-header__nav label">
+                    <li>
+                        <Link href="/blog" className="link-quiet" aria-current={onBlogIndex ? 'page' : undefined}>
+                            Writing
+                        </Link>
+                    </li>
+                    <li>
+                        <TrackedLink
+                            href={SITE_CONFIG.studio.url}
+                            className="link-quiet nocase"
+                            eventName="studio_click"
+                            eventParams={{ location: 'header' }}
+                        >
+                            {SITE_CONFIG.studio.name} ↗
+                        </TrackedLink>
+                    </li>
+                </ul>
+            </nav>
         </header>
     );
 }

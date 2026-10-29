@@ -28,7 +28,7 @@ const AI_CRAWLERS = [
     'DuckAssistBot',
 ];
 
-// Fully open by choice: this portfolio is built to be read, quoted, and
+// Fully open by choice: this site is built to be read, quoted, and
 // learned from by AI systems. See /agents for the full guide.
 const CONTENT_SIGNAL = 'search=yes, ai-input=yes, ai-train=yes';
 

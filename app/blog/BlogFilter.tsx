@@ -1,15 +1,10 @@
 "use client";
 
 import { useState } from "react";
-import Link from "next/link";
+import PostList, { type PostListItem } from "../components/PostList";
 
-interface BlogPost {
-    slug: string;
-    title: string;
-    date: string;
-    excerpt: string;
+interface BlogPost extends PostListItem {
     tags: string[];
-    readTime: number;
 }
 
 export default function BlogFilter({ posts, tags }: { posts: BlogPost[]; tags: string[] }) {
@@ -20,52 +15,41 @@ export default function BlogFilter({ posts, tags }: { posts: BlogPost[]; tags: s
         : posts;
 
     return (
-        <>
-            <div className="blog-filter-row">
-                <button
-                    onClick={() => setActiveTag(null)}
-                    className={`tag-filter ${!activeTag ? "tag-filter-active" : ""}`}
-                >
-                    All
-                </button>
-                {tags.map((tag) => (
+        <section className="section" aria-label="Posts">
+            <div className="section__head">
+                <div className="section__meta">
+                    <h2 className="label"><span className="muted">Filter</span></h2>
+                    <span className="label muted">{filtered.length} shown</span>
+                </div>
+                <div className="filter label" role="group" aria-label="Filter by tag">
                     <button
-                        key={tag}
-                        onClick={() => setActiveTag(activeTag === tag ? null : tag)}
-                        className={`tag-filter ${activeTag === tag ? "tag-filter-active" : ""}`}
+                        type="button"
+                        onClick={() => setActiveTag(null)}
+                        className="filter__btn"
+                        aria-pressed={!activeTag}
                     >
-                        {tag}
+                        All
                     </button>
-                ))}
+                    {tags.map((tag) => (
+                        <button
+                            type="button"
+                            key={tag}
+                            onClick={() => setActiveTag(activeTag === tag ? null : tag)}
+                            className="filter__btn"
+                            aria-pressed={activeTag === tag}
+                        >
+                            {tag}
+                        </button>
+                    ))}
+                </div>
             </div>
-            <div>
-                {filtered.map((post) => (
-                    <Link key={post.slug} href={`/blog/${post.slug}`} className="blog-list-item">
-                        <div className="blog-list-line">
-                            <h2>{post.title}</h2>
-                            <div className="blog-meta">
-                                <time>
-                                    {new Date(post.date).toLocaleDateString("en-US", {
-                                        year: "numeric",
-                                        month: "short",
-                                        timeZone: "UTC",
-                                    })}
-                                </time>
-                                {post.tags.length > 0 && (
-                                    <>
-                                        <span>·</span>
-                                        <span>{post.tags.join(", ")}</span>
-                                    </>
-                                )}
-                            </div>
-                        </div>
-                        <p>{post.excerpt}</p>
-                    </Link>
-                ))}
-                {filtered.length === 0 && (
-                    <p className="blog-empty">No posts found for this tag.</p>
+            <div className="section__body">
+                {filtered.length > 0 ? (
+                    <PostList posts={filtered} />
+                ) : (
+                    <p className="small muted">No posts found for this tag.</p>
                 )}
             </div>
-        </>
+        </section>
     );
 }

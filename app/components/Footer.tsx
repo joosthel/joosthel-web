@@ -1,88 +1,18 @@
-"use client";
-
 import Link from 'next/link';
-import { useEffect, useState } from 'react';
 import { SITE_CONFIG } from '../../lib/constants';
-import TrackedLink from './TrackedLink';
 
 export default function Footer() {
-    const [time, setTime] = useState('');
-
-    useEffect(() => {
-        function updateBerlinTime() {
-            try {
-                // en-GB yields "17:42 CEST" / "17:42 CET"; en-US would print "GMT+2".
-                setTime(new Date().toLocaleTimeString('en-GB', {
-                    timeZone: 'Europe/Berlin',
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    hour12: false,
-                    timeZoneName: 'short',
-                }));
-            } catch {
-                setTime('Berlin, Germany');
-            }
-        }
-
-        updateBerlinTime();
-        const interval = setInterval(updateBerlinTime, 60000);
-        return () => clearInterval(interval);
-    }, []);
-
     return (
-        <footer className="site-footer">
-            <div className="footer-inner">
-                <div className="footer-top">
-                    <div>
-                        <Link href="/" className="footer-brand-name">Joost Helfers</Link>
-                        <p className="footer-brand-desc">{SITE_CONFIG.description}</p>
-                    </div>
-
-                    <div className="footer-nav-groups">
-                        <nav className="footer-nav">
-                            <span className="footer-nav-heading">Navigate</span>
-                            <Link href="/#work">Work</Link>
-                            <Link href="/packages">Packages</Link>
-                            <Link href="/pipelines">Expertise</Link>
-                            <Link href="/about">About</Link>
-                            <Link href="/blog">Writing</Link>
-                        </nav>
-
-                        <nav className="footer-nav">
-                            <span className="footer-nav-heading">Connect</span>
-                            <a href={SITE_CONFIG.linkedin} target="_blank" rel="noopener noreferrer">LinkedIn</a>
-                            <a href={SITE_CONFIG.github} target="_blank" rel="noopener noreferrer">GitHub</a>
-                            <TrackedLink
-                                href="/assets/pdf/CV-Helfers.pdf"
-                                target="_blank"
-                                rel="noopener noreferrer"
-                                eventName="download_cv"
-                            >
-                                CV (PDF)
-                            </TrackedLink>
-                            <a href="/feed.xml">RSS</a>
-                        </nav>
-
-                        <nav className="footer-nav">
-                            <span className="footer-nav-heading">Agents</span>
-                            <Link href="/agents">For AI agents</Link>
-                            <a href="/llms.txt">llms.txt</a>
-                            <a href={`mailto:${SITE_CONFIG.agentEmail}`}>{SITE_CONFIG.agentEmail}</a>
-                        </nav>
-                    </div>
-                </div>
-
-                <div className="footer-bottom">
-                    <div className="footer-legal">
-                        <span>&copy; {new Date().getFullYear()}</span>
-                        <Link href="/imprint">Imprint</Link>
-                        <Link href="/privacy">Privacy</Link>
-                    </div>
-                    <div className="footer-location">
-                        <span className="live-dot" aria-hidden="true" />
-                        Berlin {time && `· ${time}`}
-                    </div>
-                </div>
+        <footer className="wrap">
+            <div className="site-footer">
+                <Link href="/" className="site-footer__name wordmark">{SITE_CONFIG.author}</Link>
+                <ul className="site-footer__links label">
+                    <li><span className="muted">© {new Date().getFullYear()}</span></li>
+                    <li><a className="link-quiet" href="/feed.xml">RSS</a></li>
+                    <li><Link className="link-quiet" href="/agents">For agents</Link></li>
+                    <li><Link className="link-quiet" href="/imprint">Imprint</Link></li>
+                    <li><Link className="link-quiet" href="/privacy">Privacy</Link></li>
+                </ul>
             </div>
         </footer>
     );

@@ -1,28 +1,13 @@
-import { PROJECTS, SERVICES } from '@/lib/data';
 import { getAllPosts } from '@/lib/blog';
-import { SITE_CONFIG, MCP_ENDPOINT } from '@/lib/constants';
+import { SITE_CONFIG } from '@/lib/constants';
+import { PROFILE_INTRO, PROFILE_LINKS } from '@/lib/data';
 
-// Extended companion to /llms.txt: full service descriptions, every project,
-// and every blog post in full text. Generated at build time from site data.
+// Extended companion to /llms.txt: profile, links, and every blog post in
+// full text. Generated at build time from site data.
 export const dynamic = 'force-static';
 
 export async function GET() {
-    const services = SERVICES.map(
-        (s) => `### ${s.title}\n${s.description}\nKeywords: ${(s.tags ?? []).join(', ')}`
-    ).join('\n\n');
-
-    const projects = PROJECTS.map((p) => {
-        const lines = [
-            `### ${p.title}`,
-            `URL: ${SITE_CONFIG.url}${p.url}`,
-            ...(p.date ? [`Date: ${p.date}`] : []),
-            ...(p.badge ? [`Status: ${p.badge}`] : []),
-            ...(p.tags ? [`Keywords: ${p.tags.join(', ')}`] : []),
-            '',
-            p.description,
-        ];
-        return lines.join('\n');
-    }).join('\n\n');
+    const links = PROFILE_LINKS.map((l) => `- ${l.label}: ${l.href.replace(/^mailto:/, '')}`).join('\n');
 
     const posts = getAllPosts()
         .map((post) => {
@@ -40,28 +25,20 @@ export async function GET() {
         })
         .join('\n\n---\n\n');
 
-    const body = `# Joost Helfers — Full Content for LLMs
+    const body = `# ${SITE_CONFIG.author}: full content for LLMs
 
-> Berlin-based creative technologist building local generative AI technology: self-hosted generative pipelines, custom AI solutions, and campaign-grade AI visuals and film. This file contains the full text of the portfolio and blog at ${SITE_CONFIG.url}. A shorter overview lives at ${SITE_CONFIG.url}/llms.txt.
+> Personal site of ${SITE_CONFIG.author}, ${SITE_CONFIG.jobTitle} at ${SITE_CONFIG.studio.name} (${SITE_CONFIG.studio.url}), Berlin. This file contains the profile and the full text of every blog post at ${SITE_CONFIG.url}. A shorter overview lives at ${SITE_CONFIG.url}/llms.txt.
 
 ## About
-Joost Helfers builds generative AI that runs on client hardware: self-hosted pipelines in ComfyUI and Python, custom tools teams can operate without him, and campaign visuals produced through controlled workflows. Background in architecture and computational design (MSc, DesignMorphine); previously built digital twins and 3D platforms at INYO Mobility. Alongside client work he makes AI film and visual experiments of his own.
+${PROFILE_INTRO.join(' ')}
 
-Selected brand credits (direct and via agencies/studios): Lindt, Zeiss, Google, Bosch, CADFEM, Souly.
+Client work, services and project enquiries are handled by ${SITE_CONFIG.studio.name}: ${SITE_CONFIG.studio.url}
 
-Contact: ${SITE_CONFIG.email} (humans) · ${SITE_CONFIG.agentEmail} (AI agents and automated outreach) · ${SITE_CONFIG.url}/about
+## Links
+${links}
+- Email for AI agents and automated outreach: ${SITE_CONFIG.agentEmail}
 
-This portfolio also runs a public, read-only MCP server (Streamable HTTP, no auth) at ${MCP_ENDPOINT}. Connection details and all machine-readable endpoints: ${SITE_CONFIG.url}/agents
-
-## Services
-
-${services}
-
-## Projects
-
-${projects}
-
-## Blog Posts (full text)
+## Blog posts (full text)
 
 ${posts}
 `;

@@ -1,5 +1,6 @@
 import { getAllPosts } from '@/lib/blog';
 import { SITE_CONFIG } from '@/lib/constants';
+import { BLOG_DESCRIPTION } from '@/lib/schema';
 
 // JSON Feed 1.1 with full post text in content_text — the friendliest
 // format for feed readers and LLM agents alike. Static at build time.
@@ -11,7 +12,7 @@ export async function GET() {
         title: 'Joost Helfers. Writing.',
         home_page_url: `${SITE_CONFIG.url}/blog`,
         feed_url: `${SITE_CONFIG.url}/feed.json`,
-        description: 'Notes on AI visual production, agentic workflows, and how brands show up for AI agents.',
+        description: BLOG_DESCRIPTION,
         authors: [{ name: SITE_CONFIG.author, url: SITE_CONFIG.url }],
         language: 'en',
         items: getAllPosts().map((post) => ({

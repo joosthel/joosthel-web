@@ -1,57 +1,69 @@
 import type { Metadata } from 'next';
-import { OG_DEFAULT_IMAGE } from '@/lib/metadata';
+import { pageMetadata } from '@/lib/metadata';
+import { SITE_CONFIG } from '@/lib/constants';
 
-export const metadata: Metadata = {
-    title: 'Imprint',
-    description: 'Legal information for joosthelfers.com.',
-    alternates: { canonical: '/imprint' },
-    openGraph: {
-        title: 'Imprint | Joost Helfers',
-        description: 'Legal information for joosthelfers.com.',
-        url: '/imprint',
-        type: 'website',
-        images: [{ url: OG_DEFAULT_IMAGE, width: 1200, height: 630 }],
-    },
-};
+export const metadata: Metadata = pageMetadata('Imprint', 'Legal information for joosthelfers.com.', '/imprint');
 
 export default function Imprint() {
     return (
-        <div className="wrapper">
-            <div className="post">
-                <header className="post-header">
-                    <h1 className="post-title">Imprint</h1>
-                </header>
-
-                <article className="post-content">
-                    <h2>Information according to § 5 TMG</h2>
+        <div className="wrap page">
+            <header className="page__top">
+                <p className="bar label">
+                    <span>Legal</span>
+                    <span className="muted">Imprint</span>
+                </p>
+                <h1 className="display page__title">Imprint</h1>
+            </header>
+            <div className="section section--tight">
+                <article className="prose prose--small">
+                    <h2>Information according to § 5 DDG</h2>
                     <p>
-                        <strong>Name:</strong> Joost Helfers<br />
-                        <strong>Address:</strong> Friedenauer Höhe, 12159 Berlin, Germany
+                        Joost Helfers<br />
+                        Friedenauer Höhe<br />
+                        12159 Berlin<br />
+                        Germany
                     </p>
 
+                    <h2>Contact</h2>
                     <p>
-                        <strong>Contact:</strong><br />
-                        <strong>Email:</strong> mail@joosthelfers.com<br />
-                        <strong>Instagram:</strong> @joosthel<br />
-                        <strong>LinkedIn:</strong> joosthel
+                        Email: <a href={`mailto:${SITE_CONFIG.email}`}>{SITE_CONFIG.email}</a><br />
+                        Instagram: <a href={SITE_CONFIG.instagram}>@joosthel</a><br />
+                        LinkedIn: <a href={SITE_CONFIG.linkedin}>in/joosthel</a>
                     </p>
 
-                    <p><strong>Tax Information:</strong> DE451239713</p>
+                    <h2>VAT ID</h2>
+                    <p>VAT identification number according to § 27a UStG: DE451239713</p>
+
+                    <h2>Responsible for content</h2>
+                    <p>
+                        Responsible for the content according to § 18 (2) MStV: Joost Helfers, address as above.
+                    </p>
+
+                    <h2>Liability for content</h2>
+                    <p>
+                        I create the content of this website with care, but I cannot guarantee that it is accurate,
+                        complete or up to date. I am responsible for my own content on these pages under the general
+                        laws. I am not obliged to monitor transmitted or stored third-party information, or to look
+                        for circumstances that indicate illegal activity (Art. 8 of the Digital Services Act,
+                        Regulation (EU) 2022/2065). Obligations to remove or block information under the general
+                        laws remain unaffected. If I become aware of a legal violation, I will remove the content
+                        in question promptly.
+                    </p>
+
+                    <h2>Liability for links</h2>
+                    <p>
+                        This website links to external websites, such as LinkedIn, Instagram, GitHub and system³. I
+                        have no influence on their content, so I cannot accept liability for it. The respective
+                        provider or operator is always responsible for the content of linked pages. If I become
+                        aware of a legal violation on a linked page, I will remove the link promptly.
+                    </p>
 
                     <h2>Copyright</h2>
                     <p>
-                        This website and its contents are subject to German copyright law. Unless expressly permitted by law (§ 44a et seq. of the copyright law), every form of utilizing, reproducing, or processing the design of this site, or its containing works, is subject to copyright protection and requires my prior consents.
-                    </p>
-                    <p>
-                        Individual reproductions of a work are allowed only for private use, so must not serve either directly or indirectly for earnings. Unauthorized utilization of copyrighted works is punishable (§ 106 of the copyright law).
-                    </p>
-
-                    <h2>Limitation of liability for internal content</h2>
-                    <p>
-                        The contents of this website have been created with my utmost care. However, I cannot guarantee the contents’ accuracy, completeness, or topicality. According to statutory provisions, I’m furthermore responsible for my own content. In this context, please note that I’m accordingly not obliged to monitor merely the transmitted or saved information of third parties, or investigate circumstances pointing to illegal activity.
-                    </p>
-                    <p>
-                        My obligation to remove or block the use of information under generally applicable laws remain unaffected by this as per §§ 8 to 10 of the Telemedia Act (TMG).
+                        The content and works on this website are subject to German copyright law. Reproduction,
+                        editing, distribution and any kind of use beyond the limits of copyright law require my
+                        prior written consent. Copies of this website are permitted for private, non-commercial
+                        use only.
                     </p>
                 </article>
             </div>

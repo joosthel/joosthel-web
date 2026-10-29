@@ -6,6 +6,8 @@ import { MDXRemote } from "next-mdx-remote/rsc";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ReadingProgress from "@/app/components/ReadingProgress";
+import Section, { Spec } from "@/app/components/Section";
+import PostList, { formatDate } from "@/app/components/PostList";
 
 export async function generateStaticParams() {
     return getAllPosts().map((post) => ({ slug: post.slug }));
@@ -63,64 +65,57 @@ export default async function BlogPost({ params }: { params: Promise<{ slug: str
 
     const relatedPosts = (post.relatedPosts ?? [])
         .map((relSlug) => loadPost(relSlug))
-        .filter(Boolean);
+        .filter((rp) => rp !== null);
+
+    const meta = [
+        { k: 'Published', v: <time dateTime={post.date}>{formatDate(post.date, 'long')}</time> },
+        ...(post.updated
+            ? [{ k: 'Updated', v: <time dateTime={post.updated}>{formatDate(post.updated, 'long')}</time> }]
+            : []),
+        { k: 'Reading', v: `${post.readTime} min` },
+        ...(post.tags.length > 0 ? [{ k: 'Tags', v: post.tags.join(', ') }] : []),
+    ];
 
     return (
-            <article className="blog-post">
-                <ReadingProgress />
-                <script
-                    type="application/ld+json"
-                    dangerouslySetInnerHTML={{
-                        __html: JSON.stringify(toJsonLd(
-                            blogPostingSchema(post),
-                            breadcrumbSchema([
-                                { name: 'Home', path: '/' },
-                                { name: 'Writing', path: '/blog' },
-                                { name: post.title, path: `/blog/${post.slug}` },
-                            ])
-                        ))
-                    }}
-                />
-                <Link href="/blog" className="blog-post-back">
-                    ← Back
-                </Link>
-                <header className="blog-post-header">
-                    <h1>{post.title}</h1>
-                    <div className="blog-meta">
-                        <time>
-                            {new Date(post.date).toLocaleDateString("en-US", {
-                                year: "numeric",
-                                month: "long",
-                                day: "numeric",
-                                timeZone: "UTC",
-                            })}
-                        </time>
-                        <span>·</span>
-                        <span>{post.readTime} min read</span>
-                        {post.tags.length > 0 && (
-                            <>
-                                <span>·</span>
-                                <span>{post.tags.join(", ")}</span>
-                            </>
-                        )}
-                    </div>
-                </header>
-                <div className="prose prose-lg max-w-none blog-post-body">
-                    <MDXRemote source={post.content} />
-                </div>
+        <article className="wrap page">
+            <ReadingProgress />
+            <script
+                type="application/ld+json"
+                dangerouslySetInnerHTML={{
+                    __html: JSON.stringify(toJsonLd(
+                        blogPostingSchema(post),
+                        breadcrumbSchema([
+                            { name: 'Home', path: '/' },
+                            { name: 'Writing', path: '/blog' },
+                            { name: post.title, path: `/blog/${post.slug}` },
+                        ])
+                    ))
+                }}
+            />
+            <header className="page__top">
+                <p className="bar label">
+                    <Link href="/blog" className="link-quiet">← Writing</Link>
+                    <span className="muted">{post.readTime} min read</span>
+                </p>
+                <h1 className="post-title">{post.title}</h1>
+            </header>
 
-                {relatedPosts.length > 0 && (
-                    <div className="blog-related">
-                        <h3 className="blog-related-heading">Related</h3>
-                        <div className="blog-related-list">
-                            {relatedPosts.map((rp) => rp && (
-                                <Link key={rp.slug} href={`/blog/${rp.slug}`}>
-                                    {rp.title} →
-                                </Link>
-                            ))}
-                        </div>
+            <div className="section">
+                <div className="section__head">
+                    <Spec rows={meta} />
+                </div>
+                <div className="section__body">
+                    <div className="prose">
+                        <MDXRemote source={post.content} />
                     </div>
-                )}
-            </article>
+                </div>
+            </div>
+
+            {relatedPosts.length > 0 && (
+                <Section title="Related" id="related" tight>
+                    <PostList posts={relatedPosts} excerpts={false} />
+                </Section>
+            )}
+        </article>
     );
 }

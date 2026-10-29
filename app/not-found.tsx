@@ -1,18 +1,20 @@
 import Link from 'next/link';
+import { SITE_CONFIG } from '../lib/constants';
 
 export default function NotFound() {
     return (
-        <div className="about-page">
-            <div className="wrapper">
-                <header className="about-page-header">
-                    <span className="label">404</span>
-                    <h1>Page not found.</h1>
-                </header>
-                <div className="about-page-content">
-                    <p>This page does not exist, or it moved. The homepage has everything that does.</p>
-                    <Link href="/" className="btn-secondary">Back to the homepage</Link>
-                </div>
-            </div>
+        <div className="wrap page page--short">
+            <header className="page__top">
+                <p className="bar label">
+                    <span>404</span>
+                    <span className="muted">Not found</span>
+                </p>
+                <h1 className="display page__title">Page not found.</h1>
+                <p className="page__lead">
+                    This page does not exist, or it moved. Client work and projects are now
+                    at <a href={SITE_CONFIG.studio.url}>{SITE_CONFIG.studio.name}</a>. <Link href="/">Back to the home page</Link>.
+                </p>
+            </header>
         </div>
     );
 }
