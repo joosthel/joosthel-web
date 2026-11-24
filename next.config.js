@@ -7,6 +7,31 @@ const STUDIO_URL = 'https://system3.xyz';
 // portfolio paths go to / with temporary redirects, so browsers and search
 // engines cache nothing that would point at a missing page later.
 const SYSTEM3_LIVE = false;
+// Security headers for every response. CSP: Next.js prerendered pages carry
+// inline hydration scripts and next/font inline styles, so script-src and
+// style-src need 'unsafe-inline' (a nonce would force dynamic rendering).
+// No 'unsafe-eval'. Vercel Web Analytics loads from same-origin /_vercel/insights.
+const CSP = [
+    "default-src 'self'",
+    "script-src 'self' 'unsafe-inline'",
+    "style-src 'self' 'unsafe-inline'",
+    "img-src 'self' data:",
+    "font-src 'self'",
+    "connect-src 'self'",
+    "object-src 'none'",
+    "base-uri 'self'",
+    "form-action 'self'",
+    "frame-ancestors 'none'",
+].join('; ');
+const securityHeaders = [
+    { key: 'Strict-Transport-Security', value: 'max-age=31536000; includeSubDomains' },
+    { key: 'X-Content-Type-Options', value: 'nosniff' },
+    { key: 'X-Frame-Options', value: 'DENY' },
+    { key: 'Referrer-Policy', value: 'strict-origin-when-cross-origin' },
+    { key: 'Permissions-Policy', value: 'camera=(), microphone=(), geolocation=(), interest-cohort=()' },
+    { key: 'Content-Security-Policy', value: CSP },
+];
+
 const studio = (path) => (SYSTEM3_LIVE ? `${STUDIO_URL}${path}` : '/');
 
 /** @type {import('next').NextConfig} */
@@ -39,7 +64,7 @@ const nextConfig = {
         };
         const negotiated = ['/', '/agents', '/blog', '/blog/:slug'];
         return [
-            { source: '/:path*', headers: [linkHeader] },
+            { source: '/:path*', headers: [linkHeader, ...securityHeaders] },
             ...negotiated.map((source) => ({
                 source,
                 headers: [{ key: 'Vary', value: 'Accept' }],
